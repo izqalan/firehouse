@@ -1,0 +1,33 @@
+# dev folders
+/files
+
+# Cobra configs
+*.cobra
+
+# Build artifacts
+*.a
+*.so
+*.pyc
+*.exe
+
+# Test data and coverage reports
+*.test
+/coverage/
+
+# IDE and editor specific files
+# Adjust based on your IDE/editor
+*.swo
+*.idea/
+.vscode/
+_darcs/
+
+# Go module metadata
+go.mod
+go.sum
+
+# Firebase service account credentials
+*.json
+
+# Temporary files created during development
+# Add specific file patterns here if needed (e.g., *.tmp)
+*.tmp
