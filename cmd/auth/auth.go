@@ -97,3 +97,25 @@ func UpdateUserDetails(a models.AuthOptions) error {
 
 	return nil
 }
+
+func DeleteUser(uid string) error {
+	log.Printf("Deleting user %s", uid)
+	// get firebase client
+	client := utils.NewFirebaseClient()
+
+	// get firebase auth client
+	auth, err := client.Client.Auth(client.GetContext())
+	if err != nil {
+		return err
+	}
+
+	// delete user
+	err = auth.DeleteUser(client.GetContext(), uid)
+	if err != nil {
+		return err
+	}
+
+	log.Print("User deleted")
+
+	return nil
+}

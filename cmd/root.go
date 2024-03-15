@@ -138,7 +138,32 @@ func initAuth() {
 		},
 	}
 
+	authDeleteCmd := &cobra.Command{
+		Use:   "delete",
+		Short: "Delete user",
+		Long:  "Delete a user from Firebase Authentication",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			uid, _ := cmd.Flags().GetString("uid")
+			// prompt confirmation
+			fmt.Printf("Are you sure you want to delete user %s? (y/n): ", uid)
+			var confirm string
+			fmt.Scanln(&confirm)
+			if confirm != "y" {
+				fmt.Println("Operation cancelled")
+				return nil
+			}
+
+			err := auth.DeleteUser(uid)
+			if err != nil {
+				return err
+			}
+			return nil
+		},
+	}
+
 	rootCmd.AddCommand(authCmd)
+
 	authCmd.AddCommand(authUpdateCmd)
 	authUpdateCmd.Flags().StringP("uid", "u", "", "User ID")
 	authUpdateCmd.Flags().StringP("email", "e", "", "Email")
@@ -148,5 +173,8 @@ func initAuth() {
 	authUpdateCmd.Flags().StringP("phone-number", "n", "", "Phone Number")
 	authUpdateCmd.Flags().BoolP("disabled", "s", false, "Disabled")
 	authUpdateCmd.Flags().BoolP("email-verified", "v", false, "Email Verified")
+
+	authCmd.AddCommand(authDeleteCmd)
+	authDeleteCmd.Flags().StringP("uid", "u", "", "User ID")
 
 }
