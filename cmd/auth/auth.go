@@ -119,3 +119,50 @@ func DeleteUser(uid string) error {
 
 	return nil
 }
+
+func CreateUser(a models.AuthOptions) error {
+	log.Printf("Creating user %s", a.Email)
+	// get firebase client
+	client := utils.NewFirebaseClient()
+
+	// get firebase auth client
+	auth, err := client.Client.Auth(client.GetContext())
+	if err != nil {
+		return err
+	}
+
+	// create user
+	params := &fauth.UserToCreate{}
+
+	if a.Email != "" {
+		params.Email(a.Email)
+	}
+
+	if a.Password != "" {
+		params.Password(a.Password)
+	}
+
+	if a.DisplayName != "" {
+		params.DisplayName(a.DisplayName)
+	}
+
+	if a.PhotoURL != "" {
+		params.PhotoURL(a.PhotoURL)
+	}
+
+	if a.PhoneNumber != "" {
+		params.PhoneNumber(a.PhoneNumber)
+	}
+
+	params.Disabled(a.Disabled)
+	params.EmailVerified(a.EmailVerified)
+
+	_, err = auth.CreateUser(client.GetContext(), params)
+	if err != nil {
+		return err
+	}
+
+	log.Print("User created")
+
+	return nil
+}

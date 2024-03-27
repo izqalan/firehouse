@@ -101,6 +101,41 @@ func initAuth() {
 		Use:   "auth",
 		Short: "Interact with Firebase Authentication",
 	}
+
+	authCreateCmd := &cobra.Command{
+		Use:   "create",
+		Short: "Create a new user",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// get all the flags
+			email, _ := cmd.Flags().GetString("email")
+			password, _ := cmd.Flags().GetString("password")
+			displayName, _ := cmd.Flags().GetString("display-name")
+			photoURL, _ := cmd.Flags().GetString("photo-url")
+			phoneNumber, _ := cmd.Flags().GetString("phone-number")
+			disabled, _ := cmd.Flags().GetBool("disabled")
+			emailVerified, _ := cmd.Flags().GetBool("email-verified")
+
+			a := models.AuthOptions{
+				Email:         email,
+				Password:      password,
+				DisplayName:   displayName,
+				PhotoURL:      photoURL,
+				PhoneNumber:   phoneNumber,
+				Disabled:      disabled,
+				EmailVerified: emailVerified,
+			}
+
+			// call the CreateUser function
+			err := auth.CreateUser(a)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		},
+	}
+
 	authUpdateCmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update user details",
@@ -163,6 +198,15 @@ func initAuth() {
 	}
 
 	rootCmd.AddCommand(authCmd)
+
+	authCmd.AddCommand(authCreateCmd)
+	authCreateCmd.Flags().StringP("email", "e", "", "Email")
+	authCreateCmd.Flags().StringP("password", "p", "", "Password")
+	authCreateCmd.Flags().StringP("display-name", "d", "", "Display Name")
+	authCreateCmd.Flags().StringP("photo-url", "o", "", "Photo URL")
+	authCreateCmd.Flags().StringP("phone-number", "n", "", "Phone Number")
+	authCreateCmd.Flags().BoolP("disabled", "s", false, "Disabled")
+	authCreateCmd.Flags().BoolP("email-verified", "v", false, "Email Verified")
 
 	authCmd.AddCommand(authUpdateCmd)
 	authUpdateCmd.Flags().StringP("uid", "u", "", "User ID")
